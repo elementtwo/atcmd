@@ -11,7 +11,7 @@ var client  = new signalR.client(
     //['chathub','messagehub','tradehub']
     //['chathub','messagehub','tradehub','authhub','historyhub']
 );
-var colors = require('colors');
+var colors = require('colors/safe');
 
 client.on(
   'ChatHub',
