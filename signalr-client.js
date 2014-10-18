@@ -1,5 +1,5 @@
 //var signalR = require('signalr-client');
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = false;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 var signalR = require('signalR.js');
 var client  = new signalR.client(
 
