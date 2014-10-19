@@ -45,7 +45,12 @@ client.serviceHandlers.connectFailed = function(error) { console.log("Websocket 
 client.serviceHandlers.connected = function(connection) { console.log("Websocket connected"); };
 client.serviceHandlers.disconnected = function() { console.log("Websocket disconnected"); }
 client.serviceHandlers.onerror = function(error) { console.log("Websocket onerror: ", error); }
-//client.serviceHandlers.messageReceived = function (message) { console.log("Websocket messageReceived: ", message); return false; }
+//client.serviceHandlers.messageReceived = function (message) {
+//  if (message.type === 'utf8' && message.utf8Data != "{}") {
+//    console.log("Websocket messageReceived: ", message);
+//  }
+//  return false;
+//}
 //client.serviceHandlers.bindingError = function (error) { console.log("Websocket bindingError: ", error); }
 
 client.serviceHandlers.connectionLost = function(error) {
