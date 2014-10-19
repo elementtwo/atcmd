@@ -21,7 +21,7 @@ Download and extract the zip file from github (https://github.com/anth-ny/atcmd/
 Open a command prompt window  
 cd to the extracted directory (with chat.js in it)  
 npm install websockets  
-(If you get an "Error: ENOENT, stat '[some directory]' then you need to mkdir [some directory].)
-optionally, npm install colors
+(If you get an "Error: ENOENT, stat '[some directory]' then you need to mkdir [some directory].)  
+optionally, npm install colors  
 
 to run: node chat.js
