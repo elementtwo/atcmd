@@ -21,10 +21,17 @@ try {
 
 function print_chat_line(name, color, message, message_time) {
   var name_with_color="";
+  var message_date=message_time.substr(0, 10);
+  var message_minute=message_time.substr(11, 8);
 
-  for (var i=message_time.length; i<=22; i++) {
-    message_time=message_time+"0";
+  if ((typeof this.old_date == 'undefined') || (this.old_date!=message_date)) {
+    console.log(message_date);
+    this.old_date=message_date;
   }
+
+//  for (var i=message_time.length; i<=22; i++) {
+//    message_time=message_time+"0";
+//  }
 
   color=color.trim();
   if (colors == null) {
@@ -46,7 +53,7 @@ function print_chat_line(name, color, message, message_time) {
   } else {
     name_with_color=colors.cyan(name);
   }
-  console.log(message_time+" "+name_with_color + ": " + message);
+  console.log(message_minute+" "+name_with_color + ": " + message);
 
   return true;
 }
@@ -57,7 +64,7 @@ client.on(
   print_chat_line
 );
 
-var callbacks=[];
+var callbacks=[]; //TODO: Use OOP
 
 client.serviceHandlers.bound = function() { console.log("Websocket bound"); }
 client.serviceHandlers.connectFailed = function(error) { console.log("Websocket connectFailed: ", error); }
@@ -94,8 +101,8 @@ function rpc(args, callback) {
   //console.log(messageID);
 }
 
-var getmore=0;
-var getmorechannel='';
+var getmore=0; //TODO: Use OOP
+var getmorechannel=''; //TODO: Use OOP
 
 function GetMessagesR(messages) {
   for (var i=0; i<messages.length; i++) {
