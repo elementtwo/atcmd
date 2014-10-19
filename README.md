@@ -5,9 +5,9 @@ atcmd
 ubuntu installation instructions
 --------------------------------
 
-wget https://github.com/anth-ny/atcmd/archive/master.zip
-unzip master.zip 
-cd atcmd-master/
+wget https://github.com/anth-ny/atcmd/archive/master.zip  
+unzip master.zip   
+cd atcmd-master/  
 sudo apt-get install nodejs  
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node #otherwise npm install websocket will fail  
 sudo apt-get install npm  
