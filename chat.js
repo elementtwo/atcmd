@@ -1,5 +1,5 @@
 //var signalR = require('signalr-client');
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //warning: ignores self-signed SSL certs; use only for the beta
 var signalR = require('signalR.js');
 var client  = new signalR.client(
 
