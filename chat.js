@@ -11,14 +11,22 @@ var client  = new signalR.client(
     //['chathub','messagehub','tradehub']
     //['chathub','messagehub','tradehub','authhub','historyhub']
 );
-var colors = require('colors/safe');
+var colors = null;
+
+try {
+  colors = require('colors/safe');
+} catch (e) {
+}
+
 
 client.on(
   'ChatHub',
   'chatRX',
   function(name, color, message, time) {
     var name_with_color="";
-    if (color==='black') {
+    if (colors == null) {
+      name_with_color=name;
+    } else if (color==='black') {
       name_with_color=name;
     } else if (color==='blue') {
       name_with_color=colors.blue(name);
