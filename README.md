@@ -5,6 +5,7 @@ atcmd
 ubuntu installation instructions
 --------------------------------
 
+Download and extract the zip file from github (https://github.com/anth-ny/atcmd/archive/master.zip)  
 sudo apt-get install nodejs  
 sudo ln -s /usr/bin/nodejs /usr/local/bin/node #otherwise npm install websocket will fail  
 sudo apt-get install npm  
@@ -16,7 +17,7 @@ to run: node chat.js
 Windows installation instructions (work in progress)
 ----------------------------------------------------
 
-Download (from http://nodejs.org/download/) and run the Windows installer; be sure to include the npm package manager (which is included by default).  
+Download (from http://nodejs.org/download/) and run the Windows installer; be sure to include the npm package manager (which should be included by default).  
 Download and extract the zip file from github (https://github.com/anth-ny/atcmd/archive/master.zip)  
 Open a command prompt window  
 cd to the extracted directory (with chat.js in it)  
