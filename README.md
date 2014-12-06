@@ -1,11 +1,6 @@
 atcmd
 =====
 
-Copyright
----------
-
-This software is copyrighted. You can download it and run it. You can make a copy or adapatation which is an essential step in using the program under 17 USC 117. You can do whatever fair use allows you to do, which I imagine includes playing around with the code without redistributing it. If you want to do something more than what you're automatically legally allowed to do, especially if you want to do so to make a profit or to help others make a profit, you need to get permission. If you're a hobbyist, I'll probably let you do what you want. If you want to make a profit or help others make a profit, I'm probably going to want a cut. If you want to contribute to the development and are willing to release your own rights, patches are welcome. If you want to contribute significantly to the development without releasing your own rights, I am willing to negotiate, including releasing everything under a copyleft license if your contributions are significant. I can be reached at anth-ny@users.noreply.github.com.
-
 ubuntu installation instructions
 --------------------------------
 
@@ -35,3 +30,8 @@ optionally, npm install colors
 
 to run: node chat.js
 to show 100 previous lines of chat (default 10): node chat.js 100
+
+Copyright
+---------
+
+This software is copyrighted. You can download it and run it. You can make a copy or adapatation which is an essential step in using the program under 17 USC 117. You can do whatever fair use allows you to do, which I imagine includes playing around with the code without redistributing it. If you want to do something more than what you're automatically legally allowed to do, especially if you want to do so to make a profit or to help others make a profit, you need to get permission. If you're a hobbyist, I'll probably let you do what you want. If you want to make a profit or help others make a profit, I'm probably going to want a cut. If you want to contribute to the development and are willing to release your own rights, patches are welcome. If you want to contribute significantly to the development without releasing your own rights, I am willing to negotiate, including releasing everything under a copyleft license if your contributions are significant. I can be reached at anth-ny@users.noreply.github.com.
