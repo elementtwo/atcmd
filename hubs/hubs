@@ -85,7 +85,15 @@
                 return proxies['accountHub'].invoke.apply(proxies['accountHub'], $.merge(["GetAuditedEvents"], $.makeArray(arguments)));
              },
 
-            upgradeToPro: function (coin, username, authtoken, pin) {
+            getGravatarId: function (username) {
+                return proxies['accountHub'].invoke.apply(proxies['accountHub'], $.merge(["GetGravatarId"], $.makeArray(arguments)));
+             },
+
+            isUsernameTakenOrInvalid: function (username) {
+                return proxies['accountHub'].invoke.apply(proxies['accountHub'], $.merge(["IsUsernameTakenOrInvalid"], $.makeArray(arguments)));
+             },
+
+            upgradeToPro: function (coin, username, authtoken, pin, timestamp) {
                 return proxies['accountHub'].invoke.apply(proxies['accountHub'], $.merge(["UpgradeToPro"], $.makeArray(arguments)));
              }
         };
@@ -113,7 +121,7 @@
                 return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["ListChannels"], $.makeArray(arguments)));
              },
 
-            sendMessage: function (username, authtoken, message, channel) {
+            sendMessage: function (username, authtoken, message, channel, timestamp) {
                 return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["SendMessage"], $.makeArray(arguments)));
              },
 
@@ -261,6 +269,10 @@
                 return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["BlockSender"], $.makeArray(arguments)));
              },
 
+            createFolder: function (username, authtoken, folder) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["CreateFolder"], $.makeArray(arguments)));
+             },
+
             deleteFolder: function (username, authtoken, folder) {
                 return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["DeleteFolder"], $.makeArray(arguments)));
              },
@@ -297,15 +309,19 @@
                 return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["MarkMsgAsRead"], $.makeArray(arguments)));
              },
 
+            markMsgAsUnread: function (username, authtoken, messageid) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["MarkMsgAsUnread"], $.makeArray(arguments)));
+             },
+
             moveMessage: function (username, authtoken, messageid, folder) {
                 return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["MoveMessage"], $.makeArray(arguments)));
              },
 
-            sendMessage: function (username, authtoken, messageid, body, title, tousername) {
+            sendMessage: function (username, authtoken, body, title, tousername, timestamp) {
                 return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["SendMessage"], $.makeArray(arguments)));
              },
 
-            unblockSender: function (username, authtoken, messageid, sendertounblock) {
+            unblockSender: function (username, authtoken, sendertounblock) {
                 return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["UnblockSender"], $.makeArray(arguments)));
              }
         };
@@ -313,11 +329,11 @@
         proxies['tradeHub'] = this.createHubProxy('tradeHub'); 
         proxies['tradeHub'].client = { };
         proxies['tradeHub'].server = {
-            createBuyOrder: function (coin, partner, price, amounttospend, username, authtoken, pin) {
+            createBuyOrder: function (coin, partner, price, amounttospend, username, authtoken, pin, timestamp) {
                 return proxies['tradeHub'].invoke.apply(proxies['tradeHub'], $.merge(["CreateBuyOrder"], $.makeArray(arguments)));
              },
 
-            createSellOrder: function (coin, partner, price, quantitytosell, username, authtoken, pin) {
+            createSellOrder: function (coin, partner, price, quantitytosell, username, authtoken, pin, timestamp) {
                 return proxies['tradeHub'].invoke.apply(proxies['tradeHub'], $.merge(["CreateSellOrder"], $.makeArray(arguments)));
              },
 
@@ -353,7 +369,7 @@
                 return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetAllOldAddressesForCoin"], $.makeArray(arguments)));
              },
 
-            getNewRXAddress: function (coin, username, authtoken) {
+            getNewRXAddress: function (coin, username, authtoken, timestamp) {
                 return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetNewRXAddress"], $.makeArray(arguments)));
              },
 
@@ -365,7 +381,7 @@
                 return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetPendingWithdrawals"], $.makeArray(arguments)));
              },
 
-            withdrawCoins: function (coin, quantity, toaddress, username, authtoken, pin) {
+            withdrawCoins: function (coin, quantity, toaddress, username, authtoken, pin, timestamp) {
                 return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["WithdrawCoins"], $.makeArray(arguments)));
              }
         };
