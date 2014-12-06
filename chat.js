@@ -118,7 +118,8 @@ function getcreds() {
   });
 }
 
-getcreds();
+session.useauthtoken(success, failure);
+//getcreds();
 
 function handle_line(line) {
   session.SendMessage(line, 'en');
