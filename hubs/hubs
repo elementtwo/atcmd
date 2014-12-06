@@ -1,0 +1,379 @@
+/*!
+ * ASP.NET SignalR JavaScript Library v2.1.2
+ * http://signalr.net/
+ *
+ * Copyright Microsoft Open Technologies, Inc. All rights reserved.
+ * Licensed under the Apache 2.0
+ * https://github.com/SignalR/SignalR/blob/master/LICENSE.md
+ *
+ */
+
+/// <reference path="..\..\SignalR.Client.JS\Scripts\jquery-1.6.4.js" />
+/// <reference path="jquery.signalR.js" />
+(function ($, window, undefined) {
+    /// <param name="$" type="jQuery" />
+    "use strict";
+
+    if (typeof ($.signalR) !== "function") {
+        throw new Error("SignalR: SignalR is not loaded. Please ensure jquery.signalR-x.js is referenced before ~/signalr/js.");
+    }
+
+    var signalR = $.signalR;
+
+    function makeProxyCallback(hub, callback) {
+        return function () {
+            // Call the client hub method
+            callback.apply(hub, $.makeArray(arguments));
+        };
+    }
+
+    function registerHubProxies(instance, shouldSubscribe) {
+        var key, hub, memberKey, memberValue, subscriptionMethod;
+
+        for (key in instance) {
+            if (instance.hasOwnProperty(key)) {
+                hub = instance[key];
+
+                if (!(hub.hubName)) {
+                    // Not a client hub
+                    continue;
+                }
+
+                if (shouldSubscribe) {
+                    // We want to subscribe to the hub events
+                    subscriptionMethod = hub.on;
+                } else {
+                    // We want to unsubscribe from the hub events
+                    subscriptionMethod = hub.off;
+                }
+
+                // Loop through all members on the hub and find client hub functions to subscribe/unsubscribe
+                for (memberKey in hub.client) {
+                    if (hub.client.hasOwnProperty(memberKey)) {
+                        memberValue = hub.client[memberKey];
+
+                        if (!$.isFunction(memberValue)) {
+                            // Not a client hub function
+                            continue;
+                        }
+
+                        subscriptionMethod.call(hub, memberKey, makeProxyCallback(hub, memberValue));
+                    }
+                }
+            }
+        }
+    }
+
+    $.hubConnection.prototype.createHubProxies = function () {
+        var proxies = {};
+        this.starting(function () {
+            // Register the hub proxies as subscribed
+            // (instance, shouldSubscribe)
+            registerHubProxies(proxies, true);
+
+            this._registerSubscribedHubs();
+        }).disconnected(function () {
+            // Unsubscribe all hub proxies when we "disconnect".  This is to ensure that we do not re-add functional call backs.
+            // (instance, shouldSubscribe)
+            registerHubProxies(proxies, false);
+        });
+
+        proxies['accountHub'] = this.createHubProxy('accountHub'); 
+        proxies['accountHub'].client = { };
+        proxies['accountHub'].server = {
+            getAuditedEvents: function (start, count, username, authtoken) {
+                return proxies['accountHub'].invoke.apply(proxies['accountHub'], $.merge(["GetAuditedEvents"], $.makeArray(arguments)));
+             },
+
+            upgradeToPro: function (coin, username, authtoken, pin) {
+                return proxies['accountHub'].invoke.apply(proxies['accountHub'], $.merge(["UpgradeToPro"], $.makeArray(arguments)));
+             }
+        };
+
+        proxies['authHub'] = this.createHubProxy('authHub'); 
+        proxies['authHub'].client = { };
+        proxies['authHub'].server = {
+            doAuth: function (username, password) {
+                return proxies['authHub'].invoke.apply(proxies['authHub'], $.merge(["DoAuth"], $.makeArray(arguments)));
+             },
+
+            doAuthW2FA: function (username, password, fa2code) {
+                return proxies['authHub'].invoke.apply(proxies['authHub'], $.merge(["DoAuthW2FA"], $.makeArray(arguments)));
+             }
+        };
+
+        proxies['chatHub'] = this.createHubProxy('chatHub'); 
+        proxies['chatHub'].client = { };
+        proxies['chatHub'].server = {
+            getMessages: function (channel, start, count) {
+                return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["GetMessages"], $.makeArray(arguments)));
+             },
+
+            listChannels: function () {
+                return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["ListChannels"], $.makeArray(arguments)));
+             },
+
+            sendMessage: function (username, authtoken, message, channel) {
+                return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["SendMessage"], $.makeArray(arguments)));
+             },
+
+            subscribe: function (channel) {
+                return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["Subscribe"], $.makeArray(arguments)));
+             },
+
+            unsubscribe: function (channel) {
+                return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["Unsubscribe"], $.makeArray(arguments)));
+             }
+        };
+
+        proxies['historyHub'] = this.createHubProxy('historyHub'); 
+        proxies['historyHub'].client = { };
+        proxies['historyHub'].server = {
+            getChatRewardsHistory: function (username, authtoken, start, count) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetChatRewardsHistory"], $.makeArray(arguments)));
+             },
+
+            getChatRewardsProgress: function (username, authtoken) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetChatRewardsProgress"], $.makeArray(arguments)));
+             },
+
+            getDepositHistory: function (username, authtoken, start, count) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetDepositHistory"], $.makeArray(arguments)));
+             },
+
+            getFeesPayoutHistory: function (username, authtoken, start, count) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetFeesPayoutHistory"], $.makeArray(arguments)));
+             },
+
+            getLottoRewardsHistory: function (username, authtoken, start, count) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetLottoRewardsHistory"], $.makeArray(arguments)));
+             },
+
+            getPendingReferrals: function (username, authtoken) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetPendingReferrals"], $.makeArray(arguments)));
+             },
+
+            getReferralHistory: function (username, authtoken, start, count) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetReferralHistory"], $.makeArray(arguments)));
+             },
+
+            getTradeHistory: function (username, authtoken, start, count) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetTradeHistory"], $.makeArray(arguments)));
+             },
+
+            getTradeRewardsHistory: function (username, authtoken) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetTradeRewardsHistory"], $.makeArray(arguments)));
+             },
+
+            getWithdrawalHistory: function (username, authtoken, start, count) {
+                return proxies['historyHub'].invoke.apply(proxies['historyHub'], $.merge(["GetWithdrawalHistory"], $.makeArray(arguments)));
+             }
+        };
+
+        proxies['infoHub'] = this.createHubProxy('infoHub'); 
+        proxies['infoHub'].client = { };
+        proxies['infoHub'].server = {
+            getAccountInfo: function (username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetAccountInfo"], $.makeArray(arguments)));
+             },
+
+            getAllActiveMarkets: function () {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetAllActiveMarkets"], $.makeArray(arguments)));
+             },
+
+            getAllOpenBuyOrders: function (username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetAllOpenBuyOrders"], $.makeArray(arguments)));
+             },
+
+            getAllOpenSellOrders: function (username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetAllOpenSellOrders"], $.makeArray(arguments)));
+             },
+
+            getAvailableBalance: function (coin, username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetAvailableBalance"], $.makeArray(arguments)));
+             },
+
+            getBalances: function (username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetBalances"], $.makeArray(arguments)));
+             },
+
+            getHoldBalance: function (coin, username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetHoldBalance"], $.makeArray(arguments)));
+             },
+
+            getInitMarketPage: function (coin, partner, username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetInitMarketPage"], $.makeArray(arguments)));
+             },
+
+            getMarketAvailableBalance: function (coin, partner, username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetMarketAvailableBalance"], $.makeArray(arguments)));
+             },
+
+            getMarketInfo: function (coin, partner) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetMarketInfo"], $.makeArray(arguments)));
+             },
+
+            getOpenBuyOrders: function (coin, partner, username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetOpenBuyOrders"], $.makeArray(arguments)));
+             },
+
+            getOpenSellOrders: function (coin, partner, username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetOpenSellOrders"], $.makeArray(arguments)));
+             },
+
+            getProPricing: function () {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetProPricing"], $.makeArray(arguments)));
+             },
+
+            getRecentTrades: function (count) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetRecentTrades"], $.makeArray(arguments)));
+             },
+
+            getReferralCode: function (username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetReferralCode"], $.makeArray(arguments)));
+             },
+
+            getRewardsBalance: function (username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetRewardsBalance"], $.makeArray(arguments)));
+             },
+
+            getRewardsInfo: function (username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetRewardsInfo"], $.makeArray(arguments)));
+             },
+
+            getRichList: function (coin, username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetRichList"], $.makeArray(arguments)));
+             },
+
+            getTradeHistory: function (coin, partner) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetTradeHistory"], $.makeArray(arguments)));
+             },
+
+            getTradersList: function (coin, partner, username, authtoken) {
+                return proxies['infoHub'].invoke.apply(proxies['infoHub'], $.merge(["GetTradersList"], $.makeArray(arguments)));
+             }
+        };
+
+        proxies['messageHub'] = this.createHubProxy('messageHub'); 
+        proxies['messageHub'].client = { };
+        proxies['messageHub'].server = {
+            blockSender: function (username, authtoken, usertoblock) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["BlockSender"], $.makeArray(arguments)));
+             },
+
+            deleteFolder: function (username, authtoken, folder) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["DeleteFolder"], $.makeArray(arguments)));
+             },
+
+            emptyTrash: function (username, authtoken) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["EmptyTrash"], $.makeArray(arguments)));
+             },
+
+            getBlockedSenders: function (username, authtoken) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["GetBlockedSenders"], $.makeArray(arguments)));
+             },
+
+            getItemsInFolderCount: function (username, authtoken, folder) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["GetItemsInFolderCount"], $.makeArray(arguments)));
+             },
+
+            getMessage: function (username, authtoken, messageid) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["GetMessage"], $.makeArray(arguments)));
+             },
+
+            getMessageHeaders: function (username, authtoken, folder, start, count) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["GetMessageHeaders"], $.makeArray(arguments)));
+             },
+
+            getUnreadCount: function (username, authtoken) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["GetUnreadCount"], $.makeArray(arguments)));
+             },
+
+            listFolders: function (username, authtoken) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["ListFolders"], $.makeArray(arguments)));
+             },
+
+            markMsgAsRead: function (username, authtoken, messageid) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["MarkMsgAsRead"], $.makeArray(arguments)));
+             },
+
+            moveMessage: function (username, authtoken, messageid, folder) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["MoveMessage"], $.makeArray(arguments)));
+             },
+
+            sendMessage: function (username, authtoken, messageid, body, title, tousername) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["SendMessage"], $.makeArray(arguments)));
+             },
+
+            unblockSender: function (username, authtoken, messageid, sendertounblock) {
+                return proxies['messageHub'].invoke.apply(proxies['messageHub'], $.merge(["UnblockSender"], $.makeArray(arguments)));
+             }
+        };
+
+        proxies['tradeHub'] = this.createHubProxy('tradeHub'); 
+        proxies['tradeHub'].client = { };
+        proxies['tradeHub'].server = {
+            createBuyOrder: function (coin, partner, price, amounttospend, username, authtoken, pin) {
+                return proxies['tradeHub'].invoke.apply(proxies['tradeHub'], $.merge(["CreateBuyOrder"], $.makeArray(arguments)));
+             },
+
+            createSellOrder: function (coin, partner, price, quantitytosell, username, authtoken, pin) {
+                return proxies['tradeHub'].invoke.apply(proxies['tradeHub'], $.merge(["CreateSellOrder"], $.makeArray(arguments)));
+             },
+
+            deleteBuyOrder: function (orderid, username, authtoken) {
+                return proxies['tradeHub'].invoke.apply(proxies['tradeHub'], $.merge(["DeleteBuyOrder"], $.makeArray(arguments)));
+             },
+
+            deleteSellOrder: function (orderid, username, authtoken) {
+                return proxies['tradeHub'].invoke.apply(proxies['tradeHub'], $.merge(["DeleteSellOrder"], $.makeArray(arguments)));
+             },
+
+            subscribe: function (coin, partner, username, authtoken) {
+                return proxies['tradeHub'].invoke.apply(proxies['tradeHub'], $.merge(["Subscribe"], $.makeArray(arguments)));
+             },
+
+            unsubscribe: function (coin, partner) {
+                return proxies['tradeHub'].invoke.apply(proxies['tradeHub'], $.merge(["Unsubscribe"], $.makeArray(arguments)));
+             }
+        };
+
+        proxies['walletHub'] = this.createHubProxy('walletHub'); 
+        proxies['walletHub'].client = { };
+        proxies['walletHub'].server = {
+            getAllAddresses: function (username, authtoken) {
+                return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetAllAddresses"], $.makeArray(arguments)));
+             },
+
+            getAllOldAddresses: function (username, authtoken) {
+                return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetAllOldAddresses"], $.makeArray(arguments)));
+             },
+
+            getAllOldAddressesForCoin: function (coin, username, authtoken) {
+                return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetAllOldAddressesForCoin"], $.makeArray(arguments)));
+             },
+
+            getNewRXAddress: function (coin, username, authtoken) {
+                return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetNewRXAddress"], $.makeArray(arguments)));
+             },
+
+            getPendingDeposits: function (username, authtoken) {
+                return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetPendingDeposits"], $.makeArray(arguments)));
+             },
+
+            getPendingWithdrawals: function (username, authtoken) {
+                return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["GetPendingWithdrawals"], $.makeArray(arguments)));
+             },
+
+            withdrawCoins: function (coin, quantity, toaddress, username, authtoken, pin) {
+                return proxies['walletHub'].invoke.apply(proxies['walletHub'], $.merge(["WithdrawCoins"], $.makeArray(arguments)));
+             }
+        };
+
+        return proxies;
+    };
+
+    signalR.hub = $.hubConnection("/signalr", { useDefaultPath: false });
+    $.extend(signalR, signalR.hub.createHubProxies());
+
+}(window.jQuery, window));
