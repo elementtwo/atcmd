@@ -8,14 +8,19 @@ session.set_debug_level(2); // 2 = verbose
 session.start();
 var fs = require('fs');
 try {
-var globalusername=fs.readFileSync("username", {encoding: 'ascii'});
-var globalpassword=fs.readFileSync("password", {encoding: 'ascii'});
+  var globalusername=fs.readFileSync(filename("username"), {encoding: 'ascii'});
+  var globalpassword=fs.readFileSync(filename("password"), {encoding: 'ascii'});
 } catch (e) {
+  console.log("read error");
+}
+
+function filename(fname) {
+  return path.join(session.confdir, fname);
 }
 
 function writeToFile(fname, data) {
   try { fs.mkdirSync(session.confdir); } catch (e) {}
-  fs.writeFile(path.join(session.confdir, fname), data, function(err) {
+  fs.writeFile(filename(fname), data, function(err) {
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
     if (err) {
@@ -32,7 +37,9 @@ function success(authtoken) {
   writeToFile("authtoken", authtoken);
   writeToFile("username", globalusername);
   writeToFile("password", globalpassword);
-  writeToFile("pin", globalpin);
+  if ((typeof globalpin === 'number')&&(globalpin>0)) {
+    writeToFile("pin", globalpin);
+  }
 }
 
 function failure() {
