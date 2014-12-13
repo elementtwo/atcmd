@@ -79,12 +79,22 @@ function onSubscribed(channel, r) {
   } else {
     tardy.output("Subscribe to "+channel+" failed");
   }
-  session.getBacklog('en', 10, print_chat_msg); 
+  session.getBacklog(channel, 10, print_chat_msg); 
   return true;
 }
 
+function login() {
+  session.login(globalusername, globalpassword, login_success, login_failure);
+}
+
 function onLogout() {
-  session.login(globalusername, globalpassword, success, failure);
+  subscribeAll(session);
+  login();
+}
+
+function subscribeAll(session) {
+  session.subscribe('en', function(r) {return onSubscribed('en', r)});
+  session.subscribe('gl', function(r) {return onSubscribed('gl', r)});
 }
 
 var session  = new ATSession();
@@ -93,17 +103,15 @@ session.set_debug_level(0);
 //session.setHubs(['chathub']);
 session.setOutput(tardy.output);
 session.set_print_chat_line(print_chat_line);
-session.subscribe('en', function(r) {return onSubscribed('English Chat', r)});
-//session.subscribe('gl', 10, function(r) {return onSubscribed('Global Chat', r)});
-//session.subscribe('fr', 10, function(r) {return onSubscribed('French Chat', r)});
 session.onLogout(onLogout);
 session.start();
+subscribeAll(session);
 
-function failure() {
+function login_failure() {
   getcreds();
 }
 
-function success() {
+function login_success() {
   tardy.onLine(handle_line);
   tardy.tardy();
 }
@@ -113,12 +121,12 @@ function getcreds() {
     tardy.question("Password: ", true, function(password) {
       globalusername=username;
       globalpassword=password;
-      session.login(username, password, success, failure);
+      login();
     });
   });
 }
 
-session.useauthtoken(success, failure);
+session.useauthtoken(login_success, login_failure);
 //getcreds();
 
 function handle_line(line) {
