@@ -1,6 +1,6 @@
 "use strict;"
 
-var ATSession = require('atsession.js');
+var ATSession = require('atsession');
 var tardy = require('tardy.js');
 var session  = new ATSession();
 var Table = require('cli-table');
@@ -45,6 +45,8 @@ function GetAllActiveMarketsR(mkts) {
 }
 
 session.rpc('infoHub','getAllActiveMarkets', [], GetAllActiveMarketsR);
+//session.rpc('infoHub', 'getOpenBuyOrders', ['LTC','BTC'], null);
+//session.rpc('infoHub', 'getOpenSellOrders', ['LTC','BTC'], null);
 
 //getInitMarketPage(coin, partner, username, authtoken)
 //getMarketAvailableBalance(coin, partner, username, authtoken)

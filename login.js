@@ -1,4 +1,4 @@
-var ATSession = require('atsession.js');
+var ATSession = require('atsession');
 var tardy = require('tardy.js');
 var path = require('path');
 
