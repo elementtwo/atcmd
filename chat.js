@@ -1,6 +1,6 @@
 //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //warning: ignores self-signed SSL certs; use only for the beta
 
-var ATSession = require('atsession.js');
+var ATSession = require('atsession');
 var colors = null;
 try {
   colors = require('colors/safe');
