@@ -88,6 +88,7 @@ function login() {
 }
 
 function onLogout() {
+  tardy.output("onLogout()");
   subscribeAll(session);
   login();
 }
