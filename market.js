@@ -20,7 +20,8 @@ function GetMarketInfoR(mkt, table, i) {
 function GetAllActiveMarketsR(mkts) {
   var table = new Table({
     head: ['name', 'ptnr', 'bid', 'ask', 'last'],
-    colWidths: [6, 6, 18, 18, 18],
+    colWidths: [8, 8, 18, 18, 18],
+    chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
   });
   var num_markets=mkts.length;
   var num_returns=0;
@@ -45,15 +46,3 @@ function GetAllActiveMarketsR(mkts) {
 }
 
 session.rpc('infoHub','getAllActiveMarkets', [], GetAllActiveMarketsR);
-//session.rpc('infoHub', 'getOpenBuyOrders', ['LTC','BTC'], null);
-//session.rpc('infoHub', 'getOpenSellOrders', ['LTC','BTC'], null);
-
-//getInitMarketPage(coin, partner, username, authtoken)
-//getMarketAvailableBalance(coin, partner, username, authtoken)
-//getMarketInfo(coin, partner)
-//getOpenBuyOrders(coin, partner, username, authtoken)
-//getOpenSellOrders(coin, partner, username, authtoken)
-//getRecentTrades(count)
-//getRichList(coin, username, authtoken)
-//getTradeHistory(coin, partner)
-//getTradersList(coin, partner, username, authtoken)
