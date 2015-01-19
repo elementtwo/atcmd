@@ -32,11 +32,16 @@ function GetAllAddressesR(addresses) {
   });
   console.log(table.toString());
 
+  process.exit();
+
   return true;
 }
 
 if (process.argv[2]) {
   var coin=process.argv[2];
-  session.rpc('walletHub','getNewRXAddress', [coin], null);
+  session.rpc('walletHub','getNewRXAddress', [coin], function(ret) {
+    session.rpc('walletHub','getAllAddresses', [], GetAllAddressesR);
+  });
+} else {
+  session.rpc('walletHub','getAllAddresses', [], GetAllAddressesR);
 }
-session.rpc('walletHub','getAllAddresses', [], GetAllAddressesR);
