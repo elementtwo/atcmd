@@ -18,7 +18,7 @@ function gpw() {
 function GetPendingWithdrawalsR(res) {
   console.log(res);
   if (res.length>0) {
-    setTimeout(gpw, 5000);
+    setTimeout(gpw, 120000); //120 seconds
     return true;
   } else {
     process.exit();

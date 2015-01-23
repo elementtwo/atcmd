@@ -20,10 +20,10 @@ function GetPendingDepositsR(res) {
   console.log(res);
   if (res.length>0) {
     flag=0;
-    setTimeout(gpd, 5000);
+    setTimeout(gpd, 120000); //120 seconds
     return true;
   } else if (flag) {
-    setTimeout(gpd, 5000);
+    setTimeout(gpd, 120000); //120 seconds
     return true;
   } else {
     process.exit();
