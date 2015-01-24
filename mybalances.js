@@ -23,15 +23,15 @@ session.useauthtoken(success, failure);
 //Name, Coin, AvailableBalance
 function GetBalancesR(balances) {
   var table = new Table({
-    head: ['name', 'coin', 'avail bal', 'hold bal', 'total bal', 'btc equiv'],
-    colWidths: [18, 7, 18, 18, 18, 18],
+    head: ['name', 'coin', 'avail bal', 'hold bal', 'total bal', 'est btc', 'est usd'],
+    colWidths: [18, 7, 18, 18, 18, 18, 9],
     chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
   });
 
   balances.forEach(function(bal) {
     if (bal.EstBTC>min_balance) {
       var tot=bal.AvailableBalance+bal.HoldBalance;
-      table.push([bal.Name, bal.Coin, bal.AvailableBalance.toFixed(8), bal.HoldBalance.toFixed(8), tot.toFixed(8), bal.EstBTC.toFixed(8)]);
+      table.push([bal.Name, bal.Coin, bal.AvailableBalance.toFixed(8), bal.HoldBalance.toFixed(8), tot.toFixed(8), bal.EstBTC.toFixed(8), bal.EstUSD.toFixed(2)]);
     }
   });
   console.log(table.toString());
