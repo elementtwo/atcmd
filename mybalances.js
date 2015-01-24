@@ -4,6 +4,8 @@ var ATSession = require('atsession');
 var session  = new ATSession();
 var Table = require('cli-table');
 
+var min_balance=0.00001;
+
 function success() {
   console.log("logged in");
 }
@@ -27,12 +29,24 @@ function GetBalancesR(balances) {
   });
 
   balances.forEach(function(bal) {
-    var tot=bal.AvailableBalance+bal.HoldBalance;
-    table.push([bal.Name, bal.Coin, bal.AvailableBalance.toFixed(8), bal.HoldBalance.toFixed(8), tot.toFixed(8), bal.EstBTC.toFixed(8)]);
+    if (bal.EstBTC>min_balance) {
+      var tot=bal.AvailableBalance+bal.HoldBalance;
+      table.push([bal.Name, bal.Coin, bal.AvailableBalance.toFixed(8), bal.HoldBalance.toFixed(8), tot.toFixed(8), bal.EstBTC.toFixed(8)]);
+    }
   });
   console.log(table.toString());
 
   return true;
+}
+
+new_min=process.argv[2];
+if (new_min) {
+  if (isNaN(parseInt(new_min))) {
+    console.log(new_min, "is not a number (should be the minimum balance which you want to display)");
+    process.exit();
+  } else {
+    min_balance=parseInt(new_min);
+  }
 }
 
 session.rpc('infoHub', 'getBalances', [], function(ret) {
