@@ -31,13 +31,34 @@ function printFunctions(functions, hub) {
   });
 
   if (hub) {
-    pushFunctions(table, functions, hub);
+    if (functions[hub]) {
+      pushFunctions(table, functions, hub);
+    } else {
+      Object.keys(functions).forEach(function(h) {
+        Object.keys(functions[h]).forEach(function(func) {
+          if (hub===func) {
+            table.push([h, func, functions[h][func]]);
+          }
+        });
+      });
+    }
   } else {
     Object.keys(functions).forEach(function(hub) {
       pushFunctions(table, functions, hub);
     });
   }
   console.log(table.toString());
+}
+
+function callback(res) {
+  console.log(res);
+  if (res.isArray) {
+    //console.log('is array');
+    return true;
+  } else {
+    //console.log('is not array');
+    return true;
+  }
 }
 
 var hub=process.argv[2];
@@ -49,5 +70,5 @@ if (!hub) {
   printFunctions(session.getFunctions(), hub);
   process.exit();
 } else {
-  session.rpc(hub, func, process.argv.slice(4), null);
+  session.rpc(hub, func, process.argv.slice(4), callback);
 }
