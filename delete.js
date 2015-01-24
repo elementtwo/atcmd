@@ -5,6 +5,8 @@ var tardy = require('tardy.js');
 var session  = new ATSession();
 var Table = require('cli-table');
 
+var refcount=0;
+
 function success() {
   console.log("logged in");
 }
@@ -21,15 +23,21 @@ session.useauthtoken(success, failure);
 
 function callback(res) {
   console.log(res);
-  process.exit();
+  if (--refcount<=0) {
+    process.exit();
+  }
 }
 
-var id=process.argv[2];
-if (id[0]==='B') {
-  session.rpc('tradeHub', 'deleteBuyOrder', [id.slice(1)], callback);
-} else if (id[0]==='S') {
-  session.rpc('tradeHub', 'deleteSellOrder', [id.slice(1)], callback);
-} else {
-  console.log("invalid trade id");
-  process.exit();
+for (var i=2; i<process.argv.length; i++) {
+  var id=process.argv[i];
+  if (id[0]==='B') {
+    session.rpc('tradeHub', 'deleteBuyOrder', [id.slice(1)], callback);
+    refcount++;
+  } else if (id[0]==='S') {
+    session.rpc('tradeHub', 'deleteSellOrder', [id.slice(1)], callback);
+    refcount++;
+  } else {
+    console.log("invalid trade id");
+    process.exit();
+  }
 }
