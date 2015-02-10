@@ -3,16 +3,16 @@ var tardy = require('tardy.js');
 var path = require('path');
 
 var session  = new ATSession();
-session.set_debug_level(0); // 0 = none
 session.set_debug_level(2); // 2 = verbose
+session.set_debug_level(0); // 0 = none
 session.start();
 var fs = require('fs');
+var globalcode;
 try {
   var globalusername=fs.readFileSync(filename("username"), {encoding: 'ascii'});
   var globalpassword=fs.readFileSync(filename("password"), {encoding: 'ascii'});
-  var globalcode=fs.readFileSync(filename("code"), {encoding: 'ascii'});
 } catch (e) {
-  console.log("read error");
+  //console.log("read error");
 }
 
 function filename(fname) {
@@ -49,13 +49,14 @@ function failure() {
 }
 
 if (globalpassword) {
+  tardy.output("Your credentials were stored in "+session.confdir+". Use logout.js to delete them.");
   if (globalcode) {
     session.login(globalusername, globalpassword, success, failure);
   } else {
     session.login(globalusername, globalpassword, success, failure);
   }
 } else {
-  tardy.output("Your credentials will be stored. Use logout.js (coming soon) to delete them.");
+  tardy.output("Your credentials will be stored in "+session.confdir+". Use logout.js to delete them.");
   tardy.question("Username: ", false, function(username) {
     tardy.question("Password: ", false, function(password) {
       tardy.question("PIN: ", false, function(pin) {
