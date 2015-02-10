@@ -41,9 +41,6 @@ function success(authtoken) {
   if ((typeof globalpin === 'number')&&(globalpin>0)) {
     writeToFile("pin", globalpin);
   }
-  if ((typeof globalcode === 'number')&&(globalcode>0)) {
-    writeToFile("code", globalcode);
-  }
 }
 
 function failure() {
@@ -58,6 +55,7 @@ if (globalpassword) {
     session.login(globalusername, globalpassword, success, failure);
   }
 } else {
+  tardy.output("Your credentials will be stored. Use logout.js (coming soon) to delete them.");
   tardy.question("Username: ", false, function(username) {
     tardy.question("Password: ", false, function(password) {
       tardy.question("PIN: ", false, function(pin) {
