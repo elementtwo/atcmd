@@ -10,6 +10,7 @@ var fs = require('fs');
 try {
   var globalusername=fs.readFileSync(filename("username"), {encoding: 'ascii'});
   var globalpassword=fs.readFileSync(filename("password"), {encoding: 'ascii'});
+  var globalcode=fs.readFileSync(filename("code"), {encoding: 'ascii'});
 } catch (e) {
   console.log("read error");
 }
@@ -40,6 +41,9 @@ function success(authtoken) {
   if ((typeof globalpin === 'number')&&(globalpin>0)) {
     writeToFile("pin", globalpin);
   }
+  if ((typeof globalcode === 'number')&&(globalcode>0)) {
+    writeToFile("code", globalcode);
+  }
 }
 
 function failure() {
@@ -48,15 +52,26 @@ function failure() {
 }
 
 if (globalpassword) {
-  session.login(globalusername, globalpassword, success, failure);
+  if (globalcode) {
+    session.login(globalusername, globalpassword, success, failure);
+  } else {
+    session.login(globalusername, globalpassword, success, failure);
+  }
 } else {
   tardy.question("Username: ", false, function(username) {
     tardy.question("Password: ", false, function(password) {
       tardy.question("PIN: ", false, function(pin) {
-        globalusername=username;
-        globalpassword=password;
-        globalpin=pin;
-        session.login(username, password, success, failure);
+        tardy.question("2FA: ", false, function(code) {
+          globalusername=username;
+          globalpassword=password;
+          globalpin=pin;
+          globalcode=code;
+          if (code>0) {
+            session.login2fa(username, password, code, success, failure);
+          } else {
+            session.login(username, password, success, failure);
+          }
+        });
       });
     });
   });
