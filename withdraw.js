@@ -61,8 +61,10 @@ if (qty>0) {
   try {
     if (globalcoin==='BLC') {
       var d = cs.decode_blc(addr);
-    } else {
+    } else if (addr.substring(0,1)!=='@') {
       var d = cs.decode(addr);
+    } else {
+      var d = '';
     }
     console.log(d);
     session.rpc('walletHub','withdrawCoins', [globalcoin, qty, addr], WithdrawCoinsR);
