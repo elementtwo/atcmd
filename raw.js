@@ -2,6 +2,9 @@ var ATSession = require('atsession');
 var session  = new ATSession();
 var Table = require('cli-table');
 
+var doExit = true;
+var doExit = false;
+
 function success() {
   console.log("logged in");
 }
@@ -50,14 +53,81 @@ function printFunctions(functions, hub) {
   console.log(table.toString());
 }
 
+function arrayEqual(arr1, arr2) {
+  return (JSON.stringify(arr1) == JSON.stringify(arr2));
+}
+
+function printArray(arr) {
+  if (arrayEqual(arr, [])) {
+    console.log("[]");
+    return true;
+  }
+  var keys=[];
+  var widths=[];
+}
+
 function callback(res) {
-  console.log(res);
-  if (res.isArray) {
-    //console.log('is array');
-    return true;
+  if (Array.isArray(res)) {
+    if (arrayEqual(res, [])) {
+      console.log("[]");
+      if (doExit) {
+        process.exit();
+      } else {
+        return true;
+      }
+    }
+    var keys=[];
+    var widths=[];
+    res.forEach(function(ele) {
+      if (arrayEqual(keys, [])) {
+        keys=Object.keys(ele);
+        keys.forEach(function(key, idx) {
+          key_len=key.length;
+          val_len=ele[key].toString().length;
+          if (key_len>val_len) {
+            widths[idx]=key_len+2;
+          } else {
+            widths[idx]=val_len+2;
+          }
+        });
+      } else if (arrayEqual(keys, Object.keys(ele))) {
+        keys.forEach(function(key, idx) {
+          var val_len=ele[key].toString().length;
+          if (widths[idx]<val_len+2) {
+            widths[idx]=val_len+2;
+          }
+        });
+      } else {
+        console.log(res);
+        return true;
+      }
+    });
+    var table = new Table({
+      head: keys,
+      colWidths: widths,
+      chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
+    });
+    res.forEach(function(ele) {
+      keys=Object.keys(ele);
+      var arr=[];
+      keys.forEach(function(key, idx) {
+        arr.push(ele[key]);
+      });
+      table.push(arr);
+    });
+    console.log(table.toString());
+    if (doExit) {
+      process.exit();
+    } else {
+      return true;
+    }
   } else {
-    //console.log('is not array');
-    return true;
+    console.log(res);
+    if (doExit) {
+      process.exit();
+    } else {
+      return true;
+    }
   }
 }
 
