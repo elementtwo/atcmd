@@ -8,6 +8,7 @@ session.set_debug_level(0); // 0 = none
 session.start();
 var fs = require('fs');
 var globalcode;
+var globalpin;
 try {
   var globalusername=fs.readFileSync(filename("username"), {encoding: 'ascii'});
   var globalpassword=fs.readFileSync(filename("password"), {encoding: 'ascii'});
@@ -50,20 +51,16 @@ function failure() {
 
 if (globalpassword) {
   tardy.output("Your credentials were stored in "+session.confdir+". Use logout.js to delete them.");
-  if (globalcode) {
-    session.login(globalusername, globalpassword, success, failure);
-  } else {
-    session.login(globalusername, globalpassword, success, failure);
-  }
+  session.login(globalusername, globalpassword, success, failure);
 } else {
   tardy.output("Your credentials will be stored in "+session.confdir+". Use logout.js to delete them.");
   tardy.question("Username: ", false, function(username) {
     tardy.question("Password: ", false, function(password) {
-      tardy.question("PIN: ", false, function(pin) {
-        tardy.question("2FA: ", false, function(code) {
+      tardy.question("PIN (optional): ", false, function(pin) {
+        tardy.question("2FA (if needed): ", false, function(code) {
           globalusername=username;
           globalpassword=password;
-          globalpin=pin;
+          globalpin=parseInt(pin);
           globalcode=code;
           if (code>0) {
             session.login2fa(username, password, code, success, failure);
