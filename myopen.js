@@ -1,7 +1,6 @@
 "use strict;"
 
 var ATSession = require('atsession');
-var tardy = require('tardy.js');
 var session  = new ATSession();
 var Table = require('cli-table');
 
