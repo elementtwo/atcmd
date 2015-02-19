@@ -5,8 +5,12 @@ var Table = require('cli-table');
 var doExit = true;
 var doExit = false;
 
-function success() {
+function auth_success() {
   console.log("logged in");
+}
+
+function pin_success() {
+  console.log("pin set");
 }
 
 function failure() {
@@ -17,8 +21,8 @@ function failure() {
 session.set_debug_level(2); // 2 = verbose
 session.set_debug_level(0); // 0 = none
 session.start();
-session.useauthtoken(success, failure);
-session.usepin(success, failure);
+session.useauthtoken(auth_success, failure);
+session.usepin(pin_success, failure);
 
 function pushFunctions(table, functions, hub) {
   Object.keys(functions[hub]).forEach(function(func) {
@@ -140,5 +144,9 @@ if (!hub) {
   printFunctions(session.getFunctions(), hub);
   process.exit();
 } else {
-  session.rpc(hub, func, process.argv.slice(4), callback);
+  try {
+    session.rpc(hub, func, process.argv.slice(4), callback);
+  } catch (e) {
+    console.log('error', e.message);
+  }
 }
