@@ -2,6 +2,7 @@ var ATSession = require('atsession');
 var session  = new ATSession();
 var cs = require('coinstring');
 var Table = require('cli-table');
+var ec = require('everycoin');
 
 function success() {
   console.log("logged in");
@@ -58,20 +59,14 @@ var globalcoin=process.argv[2];
 var qty=process.argv[3];
 var addr=process.argv[4];
 if (qty>0) {
-  try {
-    if (globalcoin==='BLC') {
-      var d = cs.decode_blc(addr);
-    } else if (addr.substring(0,1)!=='@') {
-      var d = cs.decode(addr);
-    } else {
-      var d = '';
-    }
-    console.log(d);
-    session.rpc('walletHub','withdrawCoins', [globalcoin, qty, addr], WithdrawCoinsR);
-  } catch (e) {
-    console.log('bad address');
-    console.log(e);
+  if (typeof(addr)!=='string') {
+    console.log('bad address (not a string)', typeof(addr));
     process.exit();
+  } else if ((ec.invalid(globalcoin, addr)<0)&&(addr.substring(0,1)!=='@')) {
+    console.log('bad address');
+    process.exit();
+  } else {
+    session.rpc('walletHub','withdrawCoins', [globalcoin, qty, addr], WithdrawCoinsR);
   }
 } else {
   gpw();
