@@ -1,6 +1,5 @@
 var ATSession = require('atsession');
 var session  = new ATSession();
-var cs = require('coinstring');
 var Table = require('cli-table');
 var ec = require('everycoin');
 
