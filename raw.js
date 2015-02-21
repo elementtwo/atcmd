@@ -71,19 +71,19 @@ function printArray(arr) {
 }
 
 function callback(res) {
-  if (Array.isArray(res)) {
+  try {
+    if (false === Array.isArray(res)) {
+      throw notanarray;
+    }
     if (arrayEqual(res, [])) {
-      console.log("[]");
-      if (doExit) {
-        process.exit();
-      } else {
-        return true;
-      }
+      throw emptyarray;
     }
     var keys=[];
     var widths=[];
     res.forEach(function(ele) {
-      if (arrayEqual(keys, [])) {
+      if (typeof(ele)==='string') {
+        throw badarray;
+      } else if (arrayEqual(keys, [])) {
         keys=Object.keys(ele);
         keys.forEach(function(key, idx) {
           key_len=key.length;
@@ -102,8 +102,7 @@ function callback(res) {
           }
         });
       } else {
-        console.log(res);
-        return true;
+        throw badarray;
       }
     });
     var table = new Table({
@@ -120,18 +119,13 @@ function callback(res) {
       table.push(arr);
     });
     console.log(table.toString());
-    if (doExit) {
-      process.exit();
-    } else {
-      return true;
-    }
-  } else {
+  } catch(e) {
     console.log(res);
-    if (doExit) {
-      process.exit();
-    } else {
-      return true;
-    }
+  }
+  if (doExit) {
+    process.exit();
+  } else {
+    return true;
   }
 }
 
