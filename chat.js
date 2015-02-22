@@ -50,10 +50,6 @@ function print_chat_line(name, color, message, message_time, id) {
     name_with_color=name;
   } else if (color==='blue') {
     name_with_color=colors.blue(name);
-//  } else if (color==='purple') {
-//    name_with_color=colors.magenta(name);
-//  } else if (color==='pink') {
-//    name_with_color=colors.rainbow(name);
   } else if (color==='green') {
     name_with_color=colors.green(name);
   } else if (color==='red') {
@@ -130,6 +126,12 @@ function getcreds() {
 session.useauthtoken(login_success, login_failure);
 //getcreds();
 
+var common=require('./common.js');
+
 function handle_line(line) {
-  session.SendMessage(line, 'en');
+  if (line === '/deposit') {
+    common.gpd(session, null, tardy.output);
+  } else {
+    session.SendMessage(line, 'en');
+  }
 }
